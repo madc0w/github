@@ -1,0 +1,13 @@
+body {
+	background-color: #efe;
+	font-family: Arial;
+}
+
+#expressions a {
+	padding: 20px;
+	text-decoration: none;
+} 
+
+#equation a {
+	text-decoration: none;
+}

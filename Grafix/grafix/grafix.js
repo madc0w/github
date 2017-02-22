@@ -179,4 +179,3 @@ function addTerm(expressionIndex) {
 	yAdjustment += prevY - nextY;
 	refreshDisplay();
 }
-//
