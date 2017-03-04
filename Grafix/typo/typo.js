@@ -206,7 +206,10 @@ function onKeyPress(e) {
 	}
 
 	if (completedBalls.length > 0) {
-		addScore(60 * completedBalls.length);
+		for ( var i in completedBalls) {
+			var ball = completedBalls[i];
+			addScore(40 * (1 - ball.y) * ball.gram.length);
+		}
 		removeBalls(completedBalls);
 		ballCompleteSound.play();
 	}
@@ -215,7 +218,7 @@ function onKeyPress(e) {
 function addScore(n) {
 	score += n;
 	score = Math.max(0, score);
-	document.getElementById("score").innerHTML = score;
+	document.getElementById("score").innerHTML = Math.round(score);
 }
 
 /* accepts parameters
