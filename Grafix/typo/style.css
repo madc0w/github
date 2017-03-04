@@ -24,6 +24,11 @@ body {
 	box-shadow: 10px 15px 24px 0px rgba(0, 0, 0, 0.4);
 }
 
+.score {
+	padding-left: 20px;
+	font-family: monospace;
+}
+
 #game-progress-wrapper {
 	width: 800px;
 	border-width: 2px;
