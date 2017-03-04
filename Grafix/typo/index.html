@@ -5,7 +5,22 @@
 </head>
 <body onLoad="onLoad();" onKeyPress="onKeyPress(event);">
 	<h1>Typo</h1>
+	<div style="width: 800px;">
+		<div id="game-progress"></div>
+	</div>
 	<canvas id="game-canvas" width="800" height="800"></canvas>
+	<div id="score-div">
+		<table>
+			<tr>
+				<td>Score</td>
+				<td id="score"></td>
+			</tr>
+			<tr>
+				<td>High Score</td>
+				<td id="hi-score"></td>
+			</tr>
+		</table>
+	</div>
 	<div id="controls">
 		<button id="pause-button" onClick="pause();">Pause (or hit space bar)</button>
 	</div>

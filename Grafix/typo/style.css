@@ -6,14 +6,37 @@ body {
 #game-canvas {
 	border: 4px solid #004080;
 	border-radius: 8px;
+	box-shadow: 10px 15px 24px 0px rgba(0, 0, 0, 0.4);
 }
 
 #controls {
 	margin: 20px;
 }
 
+#score-div {
+	display: inline-block;
+	vertical-align: top;
+	padding: 20px;
+	margin: 10px;
+	background-color: #ee2;
+	border-radius: 8px;
+	box-shadow: 10px 15px 24px 0px rgba(0, 0, 0, 0.4);
+}
+
+#game-progress {
+	height: 12px;
+	width: 0px;
+	background-color: #ee2;
+	margin-bottom: 10px;
+	border-radius: 2px;
+}
+
+#score-div td {
+	font-size: 40px;
+}
+
 button {
-	background-color: #cc2;
+	background-color: #ee2;
 	padding: 10px;
 	font-weight: bold;
 }

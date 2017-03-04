@@ -1,5 +1,5 @@
 var interval = 25; // ms
-var maxTime = 3 * 60 * 1000 / interval;
+var maxTime = 2 * 60 * 1000 / interval;
 var gravity = 0.00003;
 var grams = [ "juju", "frf", "ded", "kik", "r", "e", "sas", "lala", "sese", "fd" ];
 var balls = [];
@@ -9,6 +9,8 @@ var bgSaturation = 0;
 var currId = 0;
 var startTime;
 var isPaused = false;
+var score = 0;
+var hiScore = 0;
 
 var badKeySound = new Audio("audio/Loud-train-horn.wav");
 var ballAtBottomSound = new Audio("audio/ball-at-bottom.wav");
@@ -19,6 +21,8 @@ function onLoad() {
 	startTime = +new Date();
 	gameCanvas = document.getElementById("game-canvas");
 	gameContext = gameCanvas.getContext("2d");
+	progressBar = document.getElementById("game-progress");
+	addScore(0);
 
 	mainInterval = setInterval(step, interval);
 }
@@ -35,6 +39,9 @@ function step() {
 	if (t > maxTime) {
 		clearInterval(mainInterval);
 
+		hiScore = Math.max(hiScore, score);
+		document.getElementById("hi-score").innerHTML = hiScore;
+
 		gameContext.font = "bold 80px Arial";
 		gameContext.textBaseline = "middle";
 		gameContext.fillStyle = "#ee0000";
@@ -45,6 +52,9 @@ function step() {
 
 		return;
 	}
+
+	progressBar.style.width = (100 * t / maxTime) + "%";
+
 	if (Math.random() < 0.025) {
 		var ball = {
 			y : 0,
@@ -120,6 +130,7 @@ function step() {
 	}
 
 	if (toRemove.length > 0) {
+		addScore(-40);
 		ballAtBottomSound.play();
 		removeBalls(toRemove);
 	}
@@ -162,13 +173,21 @@ function onKeyPress(e) {
 		keyPressSound.play();
 	} else {
 		bgSaturation = 0.9;
+		addScore(-10);
 		badKeySound.play();
 	}
 
 	if (completedBalls.length > 0) {
+		addScore(60 * completedBalls.length);
 		removeBalls(completedBalls);
 		ballCompleteSound.play();
 	}
+}
+
+function addScore(n) {
+	score += n;
+	score = Math.max(0, score);
+	document.getElementById("score").innerHTML = score;
 }
 
 /* accepts parameters
