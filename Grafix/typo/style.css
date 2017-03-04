@@ -19,14 +19,29 @@ body {
 	padding: 20px;
 	margin: 10px;
 	background-color: #ee2;
-	border: 4px solid #004080;
-	border-radius: 8px;
+	border: 4px solid #004080; border-radius : 8px;
 	box-shadow: 10px 15px 24px 0px rgba(0, 0, 0, 0.4);
+	border-radius: 8px;
 }
 
 .score {
 	padding-left: 20px;
 	font-family: monospace;
+}
+
+#level-selection {
+	margin-bottom: 10px;
+}
+
+#level-selection a {
+	padding: 10px;
+	border-radius: 8px;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+#level-selection .selected {
+	background-color: white;
 }
 
 #game-progress-wrapper {
@@ -52,10 +67,10 @@ body {
 }
 
 button {
-	cursor: pointer;
-	border: 4px solid #004080;
+	cursor: pointer; border : 4px solid #004080;
 	border-radius: 8px;
 	background-color: #ee2;
 	padding: 10px;
 	font-weight: bold;
+	border: 4px solid #004080;
 }

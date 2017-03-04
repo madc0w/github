@@ -1,7 +1,7 @@
 var interval = 25; // ms
 var maxTime = 2 * 60 * 1000 / interval;
 var gravity = 0.00002;
-var grams = [ "juju", "frf", "ded", "kik", "r", "e", "sas", "lala", "sese", "fd" ];
+var grams;
 var balls = [];
 var t = 0;
 var typedKeys = [];
@@ -11,6 +11,7 @@ var isPaused = false;
 var score = 0;
 var hiScore = 0;
 var mainInterval;
+var level = 0;
 
 var badKeySound = new Audio("audio/Loud-train-horn.wav");
 var ballAtBottomSound = new Audio("audio/ball-at-bottom.wav");
@@ -21,7 +22,7 @@ function onLoad() {
 	gameCanvas = document.getElementById("game-canvas");
 	gameContext = gameCanvas.getContext("2d");
 	progressBar = document.getElementById("game-progress");
-	start();
+	selectLevel(2);
 }
 
 function start() {
@@ -41,6 +42,7 @@ function start() {
 
 function step() {
 	if (isPaused) {
+		setMessage("PAUSED");
 		return;
 	}
 	t++;
@@ -51,14 +53,7 @@ function step() {
 		hiScore = Math.max(hiScore, score);
 		document.getElementById("hi-score").innerHTML = hiScore;
 
-		gameContext.font = "bold 80px Arial";
-		gameContext.textBaseline = "middle";
-		gameContext.fillStyle = "#ee0000";
-		var message = "GAME OVER";
-		var textWidth = gameContext.measureText(message).width;
-		var y = gameCanvas.height / 2;
-		gameContext.fillText(message, (gameCanvas.width - textWidth) / 2, y);
-
+		setMessage("GAME OVER");
 		return;
 	}
 
@@ -213,6 +208,43 @@ function onKeyPress(e) {
 		removeBalls(completedBalls);
 		ballCompleteSound.play();
 	}
+}
+
+function setMessage(message) {
+	gameContext.font = "bold 80px Arial";
+	gameContext.textBaseline = "middle";
+	gameContext.fillStyle = "#ee0000";
+	var textWidth = gameContext.measureText(message).width;
+	var y = gameCanvas.height / 2;
+	gameContext.fillText(message, (gameCanvas.width - textWidth) / 2, y);
+}
+
+function selectLevel(l) {
+	document.getElementById("level-" + level).className = "";
+	level = l;
+	document.getElementById("level-" + level).className = "selected";
+
+	if (level == 0) {
+		gravity = 0.00001;
+		grams = [ "a", "s", "d", "f", "j", "k", "l" ];
+	} else if (level == 1) {
+		gravity = 0.000012;
+		grams = [ "as", "jk", "da", "df", "a", "la", "ga", "gh" ];
+	} else if (level == 2) {
+		gravity = 0.00002;
+		grams = [ "juju", "frf", "ded", "kik", "r", "e", "sas", "lala", "sese", "fd" ];
+	} else if (level == 3) {
+		gravity = 0.000025;
+		grams = [ "go", "this", "ded", "kik", "r", "e", "sas", "lala", "sese", "fd" ];
+	} else if (level == 4) {
+		gravity = 0.00003;
+		grams = [ "juju", "frf", "ded", "kik", "r", "e", "sas", "lala", "sese", "fd" ];
+	} else if (level == 5) {
+		gravity = 0.00006;
+		grams = [ "this", "here", "omg", "wtf", "madness", "wow", "r5zq", "please", "stop", "321go", "words", "fast", "very", "8px32", "dd6gv",
+			"bq992" ];
+	}
+	start();
 }
 
 function addScore(n) {
