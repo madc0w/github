@@ -19,16 +19,27 @@ body {
 	padding: 20px;
 	margin: 10px;
 	background-color: #ee2;
+	border: 4px solid #004080;
 	border-radius: 8px;
 	box-shadow: 10px 15px 24px 0px rgba(0, 0, 0, 0.4);
+}
+
+#game-progress-wrapper {
+	width: 800px;
+	border-width: 2px;
+	border-color: #222;
+	border-style: solid;
+	margin-bottom: 10px;
+	border: 4px solid #004080;
+	border-radius: 8px;
+	background-color: #e6e6e6;
 }
 
 #game-progress {
 	height: 12px;
 	width: 0px;
 	background-color: #ee2;
-	margin-bottom: 10px;
-	border-radius: 2px;
+	border-radius: 8px;
 }
 
 #score-div td {
@@ -36,6 +47,9 @@ body {
 }
 
 button {
+	cursor: pointer;
+	border: 4px solid #004080;
+	border-radius: 8px;
 	background-color: #ee2;
 	padding: 10px;
 	font-weight: bold;

@@ -3,9 +3,9 @@
 <link rel="stylesheet" type="text/css" href="style.css" />
 <script type="text/javascript" src="typo.js"></script>
 </head>
-<body onLoad="onLoad();" onKeyPress="onKeyPress(event);">
+<body onLoad="onLoad();" onKeyPress="onKeyPress(event);" onClick="onClick(event);">
 	<h1>Typo</h1>
-	<div style="width: 800px;">
+	<div id="game-progress-wrapper">
 		<div id="game-progress"></div>
 	</div>
 	<canvas id="game-canvas" width="800" height="800"></canvas>
@@ -22,7 +22,8 @@
 		</table>
 	</div>
 	<div id="controls">
-		<button id="pause-button" onClick="pause();">Pause (or hit space bar)</button>
+		<button id="pause-button" >Pause (or hit space bar)</button>
+		<button id="start-button" >Play Again</button>
 	</div>
 </body>
 </html>

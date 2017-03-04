@@ -1,16 +1,16 @@
 var interval = 25; // ms
 var maxTime = 2 * 60 * 1000 / interval;
-var gravity = 0.00003;
+var gravity = 0.00002;
 var grams = [ "juju", "frf", "ded", "kik", "r", "e", "sas", "lala", "sese", "fd" ];
 var balls = [];
 var t = 0;
 var typedKeys = [];
 var bgSaturation = 0;
 var currId = 0;
-var startTime;
 var isPaused = false;
 var score = 0;
 var hiScore = 0;
+var mainInterval;
 
 var badKeySound = new Audio("audio/Loud-train-horn.wav");
 var ballAtBottomSound = new Audio("audio/ball-at-bottom.wav");
@@ -18,17 +18,25 @@ var keyPressSound = new Audio("audio/Button-click-sound.wav");
 var ballCompleteSound = new Audio("audio/Spinning-sound.wav");
 
 function onLoad() {
-	startTime = +new Date();
 	gameCanvas = document.getElementById("game-canvas");
 	gameContext = gameCanvas.getContext("2d");
 	progressBar = document.getElementById("game-progress");
-	addScore(0);
-
-	mainInterval = setInterval(step, interval);
+	start();
 }
 
-function pause() {
-	isPaused = !isPaused;
+function start() {
+	isPaused = false;
+	typedKeys = [];
+	balls = [];
+	score = 0;
+	t = 0;
+	currId = 0;
+	bgSaturation = 0;
+	addScore(0);
+	if (mainInterval) {
+		clearInterval(mainInterval);
+	}
+	mainInterval = setInterval(step, interval);
 }
 
 function step() {
@@ -39,6 +47,7 @@ function step() {
 	if (t > maxTime) {
 		clearInterval(mainInterval);
 
+		isPaused = true;
 		hiScore = Math.max(hiScore, score);
 		document.getElementById("hi-score").innerHTML = hiScore;
 
@@ -61,7 +70,7 @@ function step() {
 			x : Math.random(),
 			vel : {
 				x : (Math.random() - 0.5) * 0.01,
-				y : Math.random() * 0.002
+				y : Math.random() * 0.0012
 			},
 			gram : grams[parseInt(Math.random() * grams.length)],
 			color : hsvToRgb(Math.random(), 0.4, 0.8),
@@ -148,9 +157,28 @@ function removeBalls(toRemove) {
 	}
 }
 
+function togglePause() {
+	isPaused = !isPaused;
+}
+
+function onClick(e) {
+	// e.detail == 1 means that the mouse was really clicked, not space bar
+	if (e.detail) {
+		if (e.target.id == "pause-button") {
+			togglePause();
+		} else if (e.target.id == "start-button") {
+			start();
+		}
+	}
+	//	console.log(JSON.stringify(e.target.id));
+}
+
 function onKeyPress(e) {
 	if (e.key == " ") {
-		pause();
+		togglePause();
+		return;
+	}
+	if (isPaused) {
 		return;
 	}
 	typedKeys.push(e.key);
