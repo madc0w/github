@@ -27,6 +27,13 @@ function onLoad() {
 	gameContext = gameCanvas.getContext("2d");
 
 	mainInterval = setInterval(step, 25);
+
+	setInterval(function() {
+		Tesseract.recognize(gameCanvas).then(function(result) {
+			console.log("result " + result);
+		});
+	}, 1000);
+
 	refreshDisplay();
 }
 
