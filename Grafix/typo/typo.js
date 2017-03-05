@@ -100,22 +100,32 @@ function step() {
 
 	progressBar.style.width = (100 * t / maxSteps) + "%";
 
-	if (Math.random() < config.newBallProbability) {
-		var grams = config.levels[level].grams[keyboard];
-
-		var gram = null;
-		var exists = false;
-		do {
-			gram = grams[parseInt(Math.random() * grams.length)];
+	var grams = config.levels[level].grams[keyboard];
+	if (balls.length < grams.length && Math.random() < config.newBallProbability) {
+		var gram;
+		var exists;
+		var index = Math.floor(Math.random() * (grams.length - balls.length));
+		var currIndex = 0;
+		for ( var i in grams) {
 			exists = false;
-			for ( var i in balls) {
-				var ball = balls[i];
-				if (ball.gram == gram) {
+			for ( var j in balls) {
+				var ball = balls[j];
+				if (ball.gram == grams[i]) {
 					exists = true;
 					break;
 				}
 			}
-		} while (exists);
+			if (!exists) {
+				if (currIndex == index) {
+					gram = grams[i];
+					break;
+				}
+				currIndex++;
+			}
+		}
+		if (!gram) {
+			console.log("oops");
+		}
 		var ball = {
 			y : 0,
 			x : Math.random(),
