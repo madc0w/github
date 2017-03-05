@@ -103,47 +103,43 @@ function step() {
 	var grams = config.levels[level].grams[keyboard];
 	if (balls.length < grams.length && Math.random() < config.newBallProbability) {
 		var gram;
-		var exists;
 		var index = Math.floor(Math.random() * (grams.length - balls.length));
 		var currIndex = 0;
-		for ( var i in grams) {
-			exists = false;
-			for ( var j in balls) {
+		for (var i = 0; i < grams.length && !gram; i++) {
+			var exists = false;
+			for (var j = 0; j < balls.length && !exists; j++) {
 				var ball = balls[j];
-				if (ball.gram == grams[i]) {
-					exists = true;
-					break;
-				}
+				exists = ball.gram == grams[i];
 			}
 			if (!exists) {
 				if (currIndex == index) {
 					gram = grams[i];
-					break;
 				}
 				currIndex++;
 			}
 		}
-		if (!gram) {
-			console.log("oops");
+		if (gram) {
+			var ball = {
+				y : 0,
+				x : Math.random(),
+				vel : {
+					x : (Math.random() - 0.5) * 0.01,
+					y : Math.random() * 0.0012
+				},
+				gram : gram,
+				color : hsvToRgb(Math.random(), 0.4, 0.8),
+				radius : 25 + (Math.random() * 15),
+				radiusFreq : 8 + (Math.random() * 5),
+				radiusAmplitude : 4 + (Math.random() * 2),
+				typedLettersIndex : -1,
+				id : currId++,
+				isComplete : false,
+				fontSize : 28
+			};
+			balls.push(ball);
+		} else {
+			console.log("gram not defined!  this should not be happening.");
 		}
-		var ball = {
-			y : 0,
-			x : Math.random(),
-			vel : {
-				x : (Math.random() - 0.5) * 0.01,
-				y : Math.random() * 0.0012
-			},
-			gram : gram,
-			color : hsvToRgb(Math.random(), 0.4, 0.8),
-			radius : 25 + (Math.random() * 15),
-			radiusFreq : 8 + (Math.random() * 5),
-			radiusAmplitude : 4 + (Math.random() * 2),
-			typedLettersIndex : -1,
-			id : currId++,
-			isComplete : false,
-			fontSize : 28
-		};
-		balls.push(ball);
 	}
 
 	if (bgSaturation > 0) {
