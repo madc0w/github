@@ -1,9 +1,11 @@
 <html>
 <head>
+<title>Typo</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
 <script type="text/javascript" src="typo.js"></script>
 </head>
-<body onLoad="onLoad();" onKeyPress="onKeyPress(event);" onClick="onClick(event);">
+<body onLoad="onLoad();" onKeyPress="onKeyPress(event);"
+	onClick="onClick(event);">
 	<div id="game-progress-wrapper">
 		<div id="game-progress"></div>
 	</div>
@@ -19,24 +21,23 @@
 				<td class="score" id="hi-score">-</td>
 			</tr>
 		</table>
-		<div id="level-selection">
-		</div>
+		<div id="level-selection"></div>
 		<div id="keyboard-selection">
 			<div id="keyboard-qwertz" class="selected">QWERTZ</div>
 			<div id="keyboard-azerty">AZERTY</div>
 		</div>
 	</div>
 	<div id="controls">
-		<button id="pause-button" >Pause (or hit space bar)</button>
-		<button id="start-button" >Play Again</button>
-		<button id="edit-config" >Game Configuration</button>
+		<button id="pause-button">Pause (or hit space bar)</button>
+		<button id="start-button">Play Again</button>
+		<button id="edit-config">Game Configuration</button>
 	</div>
 	<div id="config">
 		<textarea id="config-text" rows="40" cols="60"></textarea>
 		<div>
-			<button id="save-config" >Save</button>
-			<button id="cancel-config" >Cancel</button>
-			<button id="reset-config" >Reset to Default</button>
+			<button id="save-config">Save</button>
+			<button id="cancel-config">Cancel</button>
+			<button id="reset-config">Reset to Default</button>
 		</div>
 	</div>
 </body>

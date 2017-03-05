@@ -102,6 +102,20 @@ function step() {
 
 	if (Math.random() < config.newBallProbability) {
 		var grams = config.levels[level].grams[keyboard];
+
+		var gram = null;
+		var exists = false;
+		do {
+			gram = grams[parseInt(Math.random() * grams.length)];
+			exists = false;
+			for ( var i in balls) {
+				var ball = balls[i];
+				if (ball.gram == gram) {
+					exists = true;
+					break;
+				}
+			}
+		} while (exists);
 		var ball = {
 			y : 0,
 			x : Math.random(),
@@ -109,7 +123,7 @@ function step() {
 				x : (Math.random() - 0.5) * 0.01,
 				y : Math.random() * 0.0012
 			},
-			gram : grams[parseInt(Math.random() * grams.length)],
+			gram : gram,
 			color : hsvToRgb(Math.random(), 0.4, 0.8),
 			radius : 25 + (Math.random() * 15),
 			radiusFreq : 8 + (Math.random() * 5),
@@ -264,17 +278,22 @@ function onKeyPress(e) {
 	var isFound = false;
 	for ( var i in balls) {
 		var ball = balls[i];
-		if (ball.isComplete) {
-			continue;
-		}
-		if (ball.gram.charAt(ball.typedLettersIndex + 1) == key) {
-			ball.typedLettersIndex++;
-			isFound = true;
-			if (ball.typedLettersIndex + 1 == ball.gram.length) {
-				ball.isComplete = true;
-				completedBalls.push(ball);
+		if (!ball.isComplete) {
+			if (ball.gram.charAt(ball.typedLettersIndex + 1) == key) {
+				ball.typedLettersIndex++;
+				isFound = true;
+				if (ball.typedLettersIndex + 1 == ball.gram.length) {
+					ball.isComplete = true;
+					completedBalls.push(ball);
+					for ( var j in balls) {
+						var ball2 = balls[j];
+						if (ball2.id != ball.id) {
+							ball2.typedLettersIndex = -1;
+						}
+					}
+				}
+				//			console.log(ball.gram + " " + ball.typedLettersIndex);
 			}
-			//			console.log(ball.gram + " " + ball.typedLettersIndex);
 		}
 	}
 
