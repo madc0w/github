@@ -1,6 +1,10 @@
 body {
-	background-color: #efe;
+	background-color: #eef;
 	font-family: Arial;
+}
+
+h1 {
+	color: blue;
 }
 
 #game-canvas {
@@ -11,6 +15,7 @@ body {
 
 #controls {
 	margin: 20px;
+	width: 800px;
 }
 
 #score-div {
@@ -33,14 +38,24 @@ body {
 	margin-bottom: 10px;
 }
 
+#level-selection li {
+	margin-bottom: 20px;
+}
+
+ul {
+	list-style-type: katakana;
+}
+
 #level-selection a {
 	padding: 10px;
 	border-radius: 8px;
 	text-decoration: none;
 	font-weight: bold;
+	color: blue;
 }
 
 #level-selection .selected {
+	box-shadow: 10px 15px 24px 0px rgba(0, 0, 0, 0.4);
 	background-color: white;
 }
 
@@ -73,4 +88,27 @@ button {
 	padding: 10px;
 	font-weight: bold;
 	border: 4px solid #004080;
+}
+
+#edit-config {
+	float: right;
+}
+
+#config {
+	display: none;
+	position: fixed;
+	top: 60px;
+	left: 60px;
+	z-index: 1;
+	background-color: #ee2;
+	width: 720px;
+    height: 660px;
+    padding: 20px;
+    border-radius: 8px;
+	border: 4px solid #004080; border-radius : 8px;
+	box-shadow: 10px 15px 24px 0px rgba(0, 0, 0, 0.4);
+}
+
+#config div {
+	margin-top: 10px;
 }
