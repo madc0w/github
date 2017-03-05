@@ -102,7 +102,7 @@ button {
 	display: none;
 	position: fixed;
 	top: 60px;
-	left: 60px;
+	left: 120px;
 	z-index: 1;
 	background-color: #ee2;
 	padding: 20px;
@@ -114,8 +114,12 @@ button {
 
 #config button {
 	background-color: white;
+	box-shadow: 10px 15px 24px 0px rgba(0, 0, 0, 0.4);
 }
 
+#config button#reset-config {
+	float: right;
+}
 
 #config div {
 	margin-top: 10px;

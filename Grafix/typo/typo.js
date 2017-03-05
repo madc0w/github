@@ -231,8 +231,10 @@ function onClick(e) {
 	// e.detail == 1 means that the mouse was really clicked, not space bar
 	if (e.detail) {
 		if (e.target.id == "pause-button") {
+			hideConfig();
 			togglePause();
 		} else if (e.target.id == "start-button") {
+			hideConfig();
 			start();
 		} else if (e.target.id == "edit-config") {
 			isPaused = true;
@@ -246,23 +248,29 @@ function onClick(e) {
 				alert("Failed to parse configuration!  Check again.");
 				return;
 			}
-			document.getElementById("config").style.display = "none";
+			hideConfig();
 			localStorage.setItem("config", configStr);
 			setup();
 			selectLevel(level);
 		} else if (e.target.id == "cancel-config") {
-			document.getElementById("config").style.display = "none";
+			hideConfig();
 		} else if (e.target.id == "reset-config") {
 			document.getElementById("config-text").value = JSON.stringify(getDefaultConfig(), null, "\t") + "\n";
 		} else if (e.target.id == "keyboard-qwertz") {
+			hideConfig();
 			setKeyboard("qwertz");
 			start();
 		} else if (e.target.id == "keyboard-azerty") {
+			hideConfig();
 			setKeyboard("azerty");
 			start();
 		}
 	}
 	//	console.log(JSON.stringify(e.target.id));
+}
+
+function hideConfig() {
+	document.getElementById("config").style.display = "none";
 }
 
 function onKeyPress(e) {
@@ -336,6 +344,7 @@ function selectLevel(l) {
 	document.getElementById("level-" + level).className = "selected";
 	localStorage.setItem("level", level);
 
+	hideConfig();
 	start();
 }
 
@@ -344,6 +353,7 @@ function setKeyboard(k) {
 	keyboard = k;
 	document.getElementById("keyboard-" + keyboard).className = "selected";
 	localStorage.setItem("keyboard", keyboard);
+	hideConfig();
 }
 
 function getDefaultConfig() {
