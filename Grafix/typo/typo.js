@@ -15,10 +15,13 @@ var level = 0;
 var isGameOver = false;
 var maxSteps;
 
-var badKeySound = new Audio("audio/Funny-noise.mp3");
-var ballAtBottomSound = new Audio("audio/ball-at-bottom.mp3");
-var keyPressSound = new Audio("audio/Button-click-sound.mp3");
-var ballCompleteSound = new Audio("audio/Spinning-sound.mp3");
+var sounds = {
+	badKey : new Audio("audio/Funny-noise.mp3"),
+	ballAtBottom : new Audio("audio/ball-at-bottom.mp3"),
+	keyPress : new Audio("audio/Button-click-sound.mp3"),
+	ballComplete : new Audio("audio/Level-up-sound-effect.mp3"),
+	gameOver : new Audio("audio/Game-over-robotic-voice.mp3")
+};
 
 function onLoad() {
 	gameCanvas = document.getElementById("game-canvas");
@@ -95,6 +98,8 @@ function step() {
 		document.getElementById("hi-score").innerHTML = Math.round(hiScore);
 
 		setMessage("GAME OVER");
+		stopSounds();
+		sounds.gameOver.play();
 		return;
 	}
 
@@ -173,7 +178,7 @@ function step() {
 			if (ball.y > 1) {
 				toRemove.push(ball);
 				addScore(-40);
-				ballAtBottomSound.play();
+				sounds.ballAtBottom.play();
 			}
 		}
 		var radius = Math.max(0, ball.radius + (Math.sin(t / ball.radiusFreq) * ball.radiusAmplitude));
@@ -312,11 +317,11 @@ function onKeyPress(e) {
 	}
 
 	if (isFound) {
-		keyPressSound.play();
+		sounds.keyPress.play();
 	} else {
 		bgSaturation = 0.9;
 		addScore(-10);
-		badKeySound.play();
+		sounds.badKey.play();
 	}
 
 	if (completedBalls.length > 0) {
@@ -325,7 +330,15 @@ function onKeyPress(e) {
 			addScore(40 * (1 - ball.y) * ball.gram.length);
 		}
 		//		removeBalls(completedBalls);
-		ballCompleteSound.play();
+		stopSounds();
+		sounds.ballComplete.play();
+	}
+}
+
+function stopSounds() {
+	for ( var sound in sounds) {
+		sounds[sound].pause();
+		sounds[sound].currentTime = 0;
 	}
 }
 
