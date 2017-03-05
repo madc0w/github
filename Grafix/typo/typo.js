@@ -1,48 +1,6 @@
-var config = {
-	maxTime : 40, // secs	
-	newBallProbability : 0.025,
-	levels : [
-		{
-			name : "Beginner",
-			gravity : 0.00001,
-			grams : [ "a", "s", "d", "f", "j", "k", "l", "g", "h" ],
-		},
-		{
-			name : "Level 2",
-			gravity : 0.000012,
-			grams : [ "aq", "sw", "de", "fr", "ju", "ki", "lo", "p", "ft", "jh", "fg" ],
-		},
-		{
-			name : "Level 3",
-			gravity : 0.000012,
-			grams : [ "ay", "sx", "dc", "fv", "gv", "jn", "jm", "k,", "l.", "jh", "fg" ],
-		},
-		{
-			name : "Intermediate",
-			gravity : 0.000015,
-			grams : [ "papa", "haha", "lol", "mama", "rar", "dada", "fifi", "fofo", "nana", "popo", "tata", "toto", "fyfy", "gogo", "gaga" ],
-		},
-		{
-			name : "Advanced",
-			gravity : 0.00002,
-			grams : [ "jun", "jul", "may", "jan", "ver", "sew", "wet", "pol", "nop", "fre", "nuh", "vop", "dee", "boo", "oop", "bin", "hex", "dec",
-				"ibm", "ocr", "fra", "usa", "the", "une", "dog", "cat", "big", "pig", "sun", "eat", "dot", "dig", "pup", "hen", "vat", "ici", "moi",
-				"ton", "nos", "him", "his", "her", "she", "out", "our" ],
-		},
-		{
-			name : "Hardcore",
-			gravity : 0.000025,
-			grams : [ "the", "quick", "brown", "fox", "jumped", "over", "lazy", "kangaroo", "dog", "monkey", "duck", "jump", "troll", "giant",
-				"zulu", "boat", "ship", "work", "play", "rain", "cloud", "west", "north", "south", "east", "atom", "quark", "mouse", "bunny" ],
-		},
-		{
-			name : "Ludicrous",
-			gravity : 0.00006,
-			grams : [ "this", "here", "omg", "wtf", "madness", "wow", "r5zq", "please", "stop", "321go", "words", "fast", "very", "8px32", "dd6gv",
-				"bq992" ],
-		}, ]
-};
+var config = getDefaultConfig();
 
+var keyboard = "qwertz";
 var interval = 25; // ms
 var balls = [];
 var t = 0;
@@ -67,8 +25,9 @@ function onLoad() {
 	gameContext = gameCanvas.getContext("2d");
 	progressBar = document.getElementById("game-progress");
 
-	setup();
-	selectLevel(2);
+	if (!setup()) {
+		selectLevel(2);
+	}
 }
 
 function setup() {
@@ -84,6 +43,22 @@ function setup() {
 	if (storedConfig) {
 		config = JSON.parse(storedConfig);
 	}
+	var storedHiScore = localStorage.getItem("hiScore");
+	if (storedHiScore) {
+		hiScore = storedHiScore;
+		document.getElementById("hi-score").innerHTML = Math.round(hiScore);
+	}
+	var storedKeyboard = localStorage.getItem("keyboard");
+	if (storedKeyboard) {
+		setKeyboard(storedKeyboard);
+	}
+	var storedLevel = localStorage.getItem("level");
+	if (storedLevel) {
+		selectLevel(storedLevel);
+		return true;
+	}
+	return false;
+
 }
 
 function start() {
@@ -115,6 +90,8 @@ function step() {
 		isPaused = true;
 		isGameOver = true;
 		hiScore = Math.max(hiScore, score);
+		localStorage.setItem("hiScore", hiScore);
+
 		document.getElementById("hi-score").innerHTML = Math.round(hiScore);
 
 		setMessage("GAME OVER");
@@ -124,6 +101,7 @@ function step() {
 	progressBar.style.width = (100 * t / maxSteps) + "%";
 
 	if (Math.random() < config.newBallProbability) {
+		var grams = config.levels[level].grams[keyboard];
 		var ball = {
 			y : 0,
 			x : Math.random(),
@@ -131,7 +109,7 @@ function step() {
 				x : (Math.random() - 0.5) * 0.01,
 				y : Math.random() * 0.0012
 			},
-			gram : config.levels[level].grams[parseInt(Math.random() * config.levels[level].grams.length)],
+			gram : grams[parseInt(Math.random() * grams.length)],
 			color : hsvToRgb(Math.random(), 0.4, 0.8),
 			radius : 25 + (Math.random() * 15),
 			radiusFreq : 8 + (Math.random() * 5),
@@ -252,9 +230,16 @@ function onClick(e) {
 			localStorage.setItem("config", configStr);
 			setup();
 			selectLevel(level);
-			start();
 		} else if (e.target.id == "cancel-config") {
 			document.getElementById("config").style.display = "none";
+		} else if (e.target.id == "reset-config") {
+			document.getElementById("config-text").value = JSON.stringify(getDefaultConfig(), null, "\t") + "\n";
+		} else if (e.target.id == "keyboard-qwertz") {
+			setKeyboard("qwertz");
+			start();
+		} else if (e.target.id == "keyboard-azerty") {
+			setKeyboard("azerty");
+			start();
 		}
 	}
 	//	console.log(JSON.stringify(e.target.id));
@@ -324,7 +309,90 @@ function selectLevel(l) {
 	document.getElementById("level-" + level).className = "";
 	level = l;
 	document.getElementById("level-" + level).className = "selected";
+	localStorage.setItem("level", level);
+
 	start();
+}
+
+function setKeyboard(k) {
+	document.getElementById("keyboard-" + keyboard).className = "";
+	keyboard = k;
+	document.getElementById("keyboard-" + keyboard).className = "selected";
+	localStorage.setItem("keyboard", keyboard);
+}
+
+function getDefaultConfig() {
+	return {
+		maxTime : 40, // secs	
+		newBallProbability : 0.025,
+		levels : [
+			{
+				name : "Beginner",
+				gravity : 0.00001,
+				grams : {
+					qwertz : [ "a", "s", "d", "f", "j", "k", "l", "g", "h" ],
+					azerty : [ "q", "s", "d", "f", "g", "h", "j", "k", "l", "m" ],
+				}
+			},
+			{
+				name : "Level 2",
+				gravity : 0.000012,
+				grams : {
+					qwertz : [ "aq", "sw", "de", "fr", "ju", "ki", "lo", "p", "ft", "jh", "fg" ],
+					azerty : [ "qa", "sz", "de", "fr", "ju", "ki", "lo", "mp", "ft", "jh", "fg" ],
+				}
+			},
+			{
+				name : "Level 3",
+				gravity : 0.000012,
+				grams : {
+					qwertz : [ "ay", "sx", "dc", "fv", "gv", "jn", "jm", "k,", "l.", "jh", "fg" ],
+					azerty : [ "qw", "sx", "dc", "fv", "gv", "jn", "jm", "k,", "l;", "jh", "fg" ],
+				}
+			},
+			{
+				name : "Intermediate",
+				gravity : 0.000015,
+				grams : {
+					qwertz : [ "papa", "haha", "lolo", "mama", "rar", "dada", "fifi", "fofo", "nana", "popo", "tata", "toto", "fyfy", "gogo", "gaga" ],
+					azerty : [ "sasa", "haha", "lolo", "mama", "kaka", "dada", "fifi", "fofo", "dede", "popo", "tata", "toto", "fyfy", "gogo", "gaga" ],
+				}
+			},
+			{
+				name : "Advanced",
+				gravity : 0.00002,
+				grams : {
+					qwertz : [ "jun", "jul", "may", "jan", "ver", "sew", "wet", "pol", "nop", "fre", "nuh", "vop", "dee", "boo", "oop", "bin", "hex",
+						"dec", "ibm", "ocr", "fra", "usa", "the", "une", "dog", "cat", "big", "pig", "sun", "eat", "dot", "dig", "pup", "hen", "vat",
+						"ici", "moi", "ton", "nos", "him", "his", "her", "she", "out", "our" ],
+					azerty : [ "jun", "jul", "may", "jan", "ver", "sew", "wet", "pol", "nop", "fre", "nuh", "vop", "dee", "boo", "oop", "bin", "hex",
+						"dec", "ibm", "ocr", "fra", "usa", "the", "une", "dog", "cat", "big", "pig", "sun", "eat", "dot", "dig", "pup", "hen", "vat",
+						"ici", "moi", "ton", "nos", "him", "his", "her", "she", "out", "our" ],
+				}
+			},
+			{
+				name : "Hardcore",
+				gravity : 0.000025,
+				grams : {
+					qwertz : [ "the", "quick", "brown", "fox", "jumped", "over", "lazy", "kangaroo", "dog", "monkey", "duck", "jump", "troll",
+						"giant", "zulu", "boat", "ship", "work", "play", "rain", "cloud", "west", "north", "south", "east", "atom", "quark", "mouse",
+						"bunny" ],
+					azerty : [ "the", "quick", "brown", "fox", "jumped", "over", "lazy", "kangaroo", "dog", "monkey", "duck", "jump", "troll",
+						"giant", "zulu", "boat", "ship", "work", "play", "rain", "cloud", "west", "north", "south", "east", "atom", "quark", "mouse",
+						"bunny" ],
+				}
+			},
+			{
+				name : "Ludicrous",
+				gravity : 0.00006,
+				grams : {
+					qwertz : [ "this", "here", "omg", "wtf", "madness", "wow", "r5zq", "please", "stop", "321go", "words", "fast", "very", "8px32",
+						"dd6gv", "bq992" ],
+					azerty : [ "this", "here", "omg", "wtf", "madness", "wow", "r5zq", "please", "stop", "321go", "words", "fast", "very", "8px32",
+						"dd6gv", "bq992" ],
+				}
+			}, ]
+	};
 }
 
 function addScore(n) {
