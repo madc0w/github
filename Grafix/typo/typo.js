@@ -197,13 +197,10 @@ function step() {
 		var x = ball.x * gameCanvas.width;
 		var y = ball.y * gameCanvas.height + radius;
 		var grd = gameContext.createRadialGradient(x, y, radius, x, y, 0);
-		// light blue
 		grd.addColorStop(0, ball.color);
-		// dark blue
 		grd.addColorStop(1, "white");
 
 		gameContext.fillStyle = grd;
-		//	      gameContext.fillStyle = ball.color;
 		gameContext.beginPath();
 		gameContext.arc(x, y, radius, 0, 2 * Math.PI);
 		gameContext.fill();
@@ -255,10 +252,10 @@ function onClick(e) {
 			hide("stats");
 			start();
 		} else if (e.target.id == "stats-button") {
-			hide("config");
 			isPaused = true;
+			hide("config");
 			showStats();
-			document.getElementById("stats").style.display = "block";
+			show("stats");
 		} else if (e.target.id == "reset-stats") {
 			stats[level] = {
 				goodKeyCounts : {},
@@ -269,11 +266,22 @@ function onClick(e) {
 		} else if (e.target.id == "close-stats") {
 			hide("stats");
 		} else if (e.target.id == "edit-config") {
-			hide("stats");
 			isPaused = true;
-			document.getElementById("config").style.display = "block";
-			document.getElementById("config-text").focus();
-			document.getElementById("config-text").value = JSON.stringify(config, null, "\t") + "\n";
+			hide("stats");
+			show("config");
+
+			var configText = document.getElementById("config-text");
+			configText.focus();
+			configText.value = JSON.stringify(config, null, "\t") + "\n";
+
+			if (configText.createTextRange) {
+				var range = elem.createTextRange();
+				range.move("character", 0);
+				range.select();
+			} else if (configText.selectionStart) {
+				configText.setSelectionRange(0, 0);
+			}
+
 		} else if (e.target.id == "save-config") {
 			var configStr = document.getElementById("config-text").value;
 			try {
@@ -340,7 +348,7 @@ function showStats() {
 	html += "</tr>\n";
 
 	html += "<tr>\n";
-	html += "	<td class=\"stat-label\">Bad key ratio</td>\n";
+	html += "	<td class=\"stat-label\">Missed key ratio</td>\n";
 	html += "	<td class=\"stat-item\">" + (100 * badKeyRatio).toFixed(2) + "%</td>\n";
 	html += "</tr>\n";
 
@@ -359,6 +367,19 @@ function showStats() {
 
 function hide(id) {
 	document.getElementById(id).style.display = "none";
+	document.getElementById("dim-overlay").style.display = "none";
+}
+
+function show(id) {
+	document.getElementById(id).style.display = "block";
+	document.getElementById("dim-overlay").style.display = "block";
+}
+
+function onKeyUp(e) {
+	if (e.keyCode == 27) {
+		hide("stats");
+		hide("config");
+	}
 }
 
 function onKeyPress(e) {
@@ -557,21 +578,13 @@ function addScore(n) {
 	document.getElementById("score").innerHTML = Math.round(score);
 }
 
-/* accepts parameters
- * h  Object = {h:x, s:y, v:z}
- * OR 
- * h, s, v
-*/
 function hsvToRgb(h, s, v) {
-	var r, g, b, i, f, p, q, t;
-	if (arguments.length === 1) {
-		s = h.s, v = h.v, h = h.h;
-	}
-	i = Math.floor(h * 6);
-	f = h * 6 - i;
-	p = v * (1 - s);
-	q = v * (1 - f * s);
-	t = v * (1 - (1 - f) * s);
+	var r, g, b;
+	var i = Math.floor(h * 6);
+	var f = h * 6 - i;
+	var p = v * (1 - s);
+	var q = v * (1 - f * s);
+	var t = v * (1 - (1 - f) * s);
 	switch (i % 6) {
 	case 0:
 		r = v, g = t, b = p;
