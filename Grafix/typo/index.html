@@ -30,14 +30,23 @@
 	<div id="controls">
 		<button id="pause-button">Pause (or hit space bar)</button>
 		<button id="start-button">Play Again</button>
+		<button id="stats-button">Stats</button>
 		<button id="edit-config">Game Configuration</button>
 	</div>
-	<div id="config">
+	<div id="config" class="modal">
 		<textarea id="config-text" rows="40" cols="60"></textarea>
 		<div>
 			<button id="save-config">Save</button>
 			<button id="cancel-config">Cancel</button>
 			<button id="reset-config">Reset to Default</button>
+		</div>
+	</div>
+	<div id="stats" class="modal">
+		<div id="stats-content">
+		</div>
+		<div id="stats-controls">
+			<button id="reset-stats">Reset Stats</button>
+			<button id="close-stats">Close</button>
 		</div>
 	</div>
 	<div id="byline">

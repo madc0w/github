@@ -101,7 +101,7 @@ button {
 	float: right;
 }
 
-#config {
+.modal {
 	display: none;
 	position: fixed;
 	top: 60px;

@@ -236,12 +236,20 @@ function onClick(e) {
 	// e.detail == 1 means that the mouse was really clicked, not space bar
 	if (e.detail) {
 		if (e.target.id == "pause-button") {
-			hideConfig();
+			hide("config");
+			hide("stats");
 			togglePause();
 		} else if (e.target.id == "start-button") {
-			hideConfig();
+			hide("config");
+			hide("stats");
 			start();
+		} else if (e.target.id == "stats-button") {
+			hide("config");
+			isPaused = true;
+			document.getElementById("stats").style.display = "block";
+
 		} else if (e.target.id == "edit-config") {
+			hide("stats");
 			isPaused = true;
 			document.getElementById("config").style.display = "block";
 			document.getElementById("config-text").value = JSON.stringify(config, null, "\t") + "\n";
@@ -253,20 +261,22 @@ function onClick(e) {
 				alert("Failed to parse configuration!  Check again.");
 				return;
 			}
-			hideConfig();
+			hide("config");
 			localStorage.setItem("config", configStr);
 			setup();
 			selectLevel(level);
 		} else if (e.target.id == "cancel-config") {
-			hideConfig();
+			hide("config");
 		} else if (e.target.id == "reset-config") {
 			document.getElementById("config-text").value = JSON.stringify(getDefaultConfig(), null, "\t") + "\n";
 		} else if (e.target.id == "keyboard-qwertz") {
-			hideConfig();
+			hide("stats");
+			hide("config");
 			setKeyboard("qwertz");
 			start();
 		} else if (e.target.id == "keyboard-azerty") {
-			hideConfig();
+			hide("stats");
+			hide("config");
 			setKeyboard("azerty");
 			start();
 		}
@@ -274,8 +284,8 @@ function onClick(e) {
 	//	console.log(JSON.stringify(e.target.id));
 }
 
-function hideConfig() {
-	document.getElementById("config").style.display = "none";
+function hide(id) {
+	document.getElementById(id).style.display = "none";
 }
 
 function onKeyPress(e) {
@@ -357,7 +367,8 @@ function selectLevel(l) {
 	document.getElementById("level-" + level).className = "selected";
 	localStorage.setItem("level", level);
 
-	hideConfig();
+	hide("config");
+	hide("stats");
 	start();
 }
 
@@ -366,7 +377,8 @@ function setKeyboard(k) {
 	keyboard = k;
 	document.getElementById("keyboard-" + keyboard).className = "selected";
 	localStorage.setItem("keyboard", keyboard);
-	hideConfig();
+	hide("config");
+	hide("stats");
 }
 
 function getDefaultConfig() {
