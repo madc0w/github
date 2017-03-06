@@ -14,6 +14,7 @@ var mainInterval;
 var level = 0;
 var isGameOver = false;
 var maxSteps;
+var stats = [];
 
 var sounds = {
 	badKey : new Audio("audio/Funny-noise.mp3"),
@@ -42,6 +43,10 @@ function setup() {
 	var levelSelectionDiv = document.getElementById("level-selection");
 	levelSelectionDiv.innerHTML = html;
 
+	var storedStats = localStorage.getItem("stats");
+	if (storedStats) {
+		stats = JSON.parse(storedStats);
+	}
 	var storedConfig = localStorage.getItem("config");
 	if (storedConfig) {
 		config = JSON.parse(storedConfig);
@@ -90,10 +95,16 @@ function step() {
 	if (t > maxSteps) {
 		clearInterval(mainInterval);
 
+		if (!stats[level].gamesPlayed) {
+			stats[level].gamesPlayed = 0;
+		}
+		stats[level].gamesPlayed++;
+
 		isPaused = true;
 		isGameOver = true;
 		hiScore = Math.max(hiScore, score);
 		localStorage.setItem("hiScore", hiScore);
+		localStorage.setItem("stats", JSON.stringify(stats));
 
 		document.getElementById("hi-score").innerHTML = Math.round(hiScore);
 
@@ -246,8 +257,17 @@ function onClick(e) {
 		} else if (e.target.id == "stats-button") {
 			hide("config");
 			isPaused = true;
+			showStats();
 			document.getElementById("stats").style.display = "block";
-
+		} else if (e.target.id == "reset-stats") {
+			stats[level] = {
+				goodKeyCounts : {},
+				badKeyCounts : {}
+			};
+			localStorage.setItem("stats", JSON.stringify(stats));
+			showStats();
+		} else if (e.target.id == "close-stats") {
+			hide("stats");
 		} else if (e.target.id == "edit-config") {
 			hide("stats");
 			isPaused = true;
@@ -282,6 +302,58 @@ function onClick(e) {
 		}
 	}
 	//	console.log(JSON.stringify(e.target.id));
+}
+
+function showStats() {
+	var html = "";
+	var badKeys = [];
+	var totalBadKeys = 0;
+	if (stats[level] && stats[level].badKeyCounts) {
+		for ( var key in stats[level].badKeyCounts) {
+			var count = stats[level].badKeyCounts[key];
+			totalBadKeys += count;
+			badKeys.push({
+				key : key,
+				count : count
+			});
+		}
+	}
+	badKeys.sort(function(key1, key2) {
+		return key1.count < key2.count;
+	});
+
+	var totalKeys = totalBadKeys;
+	if (stats[level] && stats[level].goodKeyCounts) {
+		for ( var key in stats[level].goodKeyCounts) {
+			totalKeys += stats[level].goodKeyCounts[key];
+		}
+	}
+
+	var badKeyRatio = totalKeys ? totalBadKeys / totalKeys : 0;
+	html += "<h1>Stats for Level: " + config.levels[level].name + "</h1>\n";
+	html += "<table>\n";
+
+	html += "<tr>\n";
+	html += "	<td class=\"stat-label\">Games played</td>\n";
+	html += "	<td class=\"stat-item\">" + (stats[level].gamesPlayed || 0) + "</td>\n";
+	html += "</tr>\n";
+
+	html += "<tr>\n";
+	html += "	<td class=\"stat-label\">Bad key ratio</td>\n";
+	html += "	<td class=\"stat-item\">" + (100 * badKeyRatio).toFixed(2) + "%</td>\n";
+	html += "</tr>\n";
+
+	html += "<tr>\n";
+	html += "	<td class=\"stat-label\">Most missed keys</td>\n";
+	html += "	<td class=\"stat-item\">\n";
+	for (var i = 0; i < Math.min(badKeys.length, 5); i++) {
+		html += "	" + badKeys[i].key.toUpperCase() + "<br/>";
+	}
+	html += "	</td>\n";
+	html += "</tr>\n";
+
+	html += "</table>\n";
+	document.getElementById("stats-content").innerHTML = html;
 }
 
 function hide(id) {
@@ -326,11 +398,34 @@ function onKeyPress(e) {
 		}
 	}
 
+	if (!stats[level]) {
+		stats[level] = {
+			goodKeyCounts : {},
+			badKeyCounts : {}
+		};
+	}
+	if (!stats[level].goodKeyCounts) {
+		stats[level].goodKeyCounts = {};
+	}
+	if (!stats[level].badKeyCounts) {
+		stats[level].badKeyCounts = {};
+	}
+
 	if (isFound) {
 		sounds.keyPress.play();
+
+		if (!stats[level].goodKeyCounts[key]) {
+			stats[level].goodKeyCounts[key] = 0;
+		}
+		stats[level].goodKeyCounts[key]++;
 	} else {
 		bgSaturation = 0.9;
 		addScore(-10);
+
+		if (!stats[level].badKeyCounts[key]) {
+			stats[level].badKeyCounts[key] = 0;
+		}
+		stats[level].badKeyCounts[key]++;
 		sounds.badKey.play();
 	}
 
