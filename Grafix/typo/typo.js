@@ -335,7 +335,7 @@ function showStats() {
 
 	html += "<tr>\n";
 	html += "	<td class=\"stat-label\">Games played</td>\n";
-	html += "	<td class=\"stat-item\">" + (stats[level].gamesPlayed || 0) + "</td>\n";
+	html += "	<td class=\"stat-item\">" + ((stats[level] && stats[level].gamesPlayed) || 0) + "</td>\n";
 	html += "</tr>\n";
 
 	html += "<tr>\n";
