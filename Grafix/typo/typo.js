@@ -272,6 +272,7 @@ function onClick(e) {
 			hide("stats");
 			isPaused = true;
 			document.getElementById("config").style.display = "block";
+			document.getElementById("config-text").focus();
 			document.getElementById("config-text").value = JSON.stringify(config, null, "\t") + "\n";
 		} else if (e.target.id == "save-config") {
 			var configStr = document.getElementById("config-text").value;
