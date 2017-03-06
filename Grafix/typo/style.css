@@ -115,7 +115,7 @@ button {
 	box-shadow: 10px 15px 24px 0px rgba(0, 0, 0, 0.4);
 }
 
-#config button {
+.modal button {
 	background-color: white;
 	box-shadow: 10px 15px 24px 0px rgba(0, 0, 0, 0.4);
 }
