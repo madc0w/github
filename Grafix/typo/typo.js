@@ -150,7 +150,8 @@ function step() {
 					y : Math.random() * 0.0012
 				},
 				gram : gram,
-				color : hsvToRgb(Math.random(), 0.4, 0.8),
+				hue : Math.random(),
+				opacity : 0.8,
 				radius : 25 + (Math.random() * 15),
 				radiusFreq : 8 + (Math.random() * 5),
 				radiusAmplitude : 4 + (Math.random() * 2),
@@ -169,17 +170,18 @@ function step() {
 		bgSaturation -= 0.1;
 		bgSaturation = Math.max(0, bgSaturation);
 	}
-	gameContext.fillStyle = hsvToRgb(1, bgSaturation, 0.9);
+	gameContext.fillStyle = rgbToHex(hsvToRgb(1, bgSaturation, 0.9));
 	gameContext.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
 
 	var toRemove = [];
 	for ( var i in balls) {
 		var ball = balls[i];
 		if (ball.isComplete) {
-			ball.radius *= 0.9;
-			ball.fontSize--;
-			ball.fontSize = Math.max(1, ball.fontSize);
-			if (ball.radius < 0.05) {
+			ball.radius *= 1.1;
+			ball.fontSize++;
+			ball.opacity -= 0.05;
+			//			ball.fontSize = Math.max(1, ball.fontSize);
+			if (ball.opacity <= 0) {
 				toRemove.push(ball);
 			}
 		} else {
@@ -203,13 +205,15 @@ function step() {
 
 		var x = ball.x * gameCanvas.width;
 		var y = ball.y * gameCanvas.height + radius;
-		var grd = gameContext.createRadialGradient(x, y, radius, x, y, 0);
-		grd.addColorStop(0, ball.color);
+		var grd = gameContext.createRadialGradient(x, y - radius, radius, x, y - radius, 0);
+		var rgb = hsvToRgb(ball.hue, 0.4, 0.8);
+		var color = rgbToRgba(rgb, ball.opacity);
+		grd.addColorStop(0, color);
 		grd.addColorStop(1, "white");
 
 		gameContext.fillStyle = grd;
 		gameContext.beginPath();
-		gameContext.arc(x, y, radius, 0, 2 * Math.PI);
+		gameContext.arc(x, y - radius, radius, 0, 2 * Math.PI);
 		gameContext.fill();
 
 		gameContext.font = "bold " + ball.fontSize + "px Arial";
@@ -223,9 +227,9 @@ function step() {
 		var untypedLettersWidth = gameContext.measureText(untypedLetters).width;
 		var halfWidth = (typedLettersWidth + untypedLettersWidth) / 2;
 		gameContext.fillStyle = "#ee0000";
-		gameContext.fillText(typedLetters, x - halfWidth, y);
+		gameContext.fillText(typedLetters, x - halfWidth, y - radius);
 		gameContext.fillStyle = "#000000";
-		gameContext.fillText(untypedLetters, x - halfWidth + typedLettersWidth, y);
+		gameContext.fillText(untypedLetters, x - halfWidth + typedLettersWidth, y - radius);
 	}
 
 	removeBalls(toRemove);
@@ -372,7 +376,7 @@ function showStats() {
 	html += "	<td class=\"stat-label\">Most missed keys</td>\n";
 	html += "	<td class=\"stat-item\">\n";
 	for (var i = 0; i < Math.min(badKeys.length, 5); i++) {
-		html += "	" + badKeys[i].key.toUpperCase() + "<br/>";
+		html += badKeys[i].key.toUpperCase() + " ";
 	}
 	html += "	</td>\n";
 	html += "</tr>\n";
@@ -626,7 +630,7 @@ function hsvToRgb(h, s, v) {
 		g : Math.round(g * 255),
 		b : Math.round(b * 255)
 	};
-	return rgbToHex(rgb);
+	return rgb;
 }
 
 function rgbToHex(rgb) {
@@ -639,4 +643,8 @@ function rgbToHex(rgb) {
 	}
 
 	return "#" + componentToHex(rgb.r) + componentToHex(rgb.g) + componentToHex(rgb.b);
+}
+
+function rgbToRgba(rgb, a) {
+	return "rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + "," + a + ")";
 }
