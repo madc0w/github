@@ -104,6 +104,13 @@ function step() {
 		isGameOver = true;
 		hiScore = Math.max(hiScore, score);
 		localStorage.setItem("hiScore", hiScore);
+
+		var levelHiScore = stats[level].hiScore;
+		if (!levelHiScore) {
+			levelHiScore = score;
+		}
+		stats[level].hiScore = Math.max(score, levelHiScore);
+
 		localStorage.setItem("stats", JSON.stringify(stats));
 
 		document.getElementById("hi-score").innerHTML = Math.round(hiScore);
@@ -259,7 +266,7 @@ function onClick(e) {
 		} else if (e.target.id == "reset-stats") {
 			stats[level] = {
 				goodKeyCounts : {},
-				badKeyCounts : {}
+				badKeyCounts : {},
 			};
 			localStorage.setItem("stats", JSON.stringify(stats));
 			showStats();
@@ -345,6 +352,15 @@ function showStats() {
 	html += "<tr>\n";
 	html += "	<td class=\"stat-label\">Games played</td>\n";
 	html += "	<td class=\"stat-item\">" + ((stats[level] && stats[level].gamesPlayed) || 0) + "</td>\n";
+	html += "</tr>\n";
+
+	var hiScore = "-";
+	if (stats[level] && stats[level].hiScore) {
+		hiScore = Math.round(stats[level].hiScore);
+	}
+	html += "<tr>\n";
+	html += "	<td class=\"stat-label\">Hi score</td>\n";
+	html += "	<td class=\"stat-item\">" + hiScore + "</td>\n";
 	html += "</tr>\n";
 
 	html += "<tr>\n";
